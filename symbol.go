@@ -32,8 +32,7 @@ var Colors = []Color{Red, Green, Blue, Yellow}
 var Shapes = []Shape{Circle, Square, Triangle}
 
 func NewSymbols() Symbols {
-	var symbols []Symbol
-
+	var symbols Symbols
 	for _, color := range Colors {
 		for _, shape := range Shapes {
 			symbol := Symbol{Color: color, Shape: shape}
@@ -53,7 +52,6 @@ func (symbols Symbols) ToMap(permutation Numbers) map[int]Symbol {
 }
 
 func (s Symbol) String() string {
-
 	var colorCodes = map[Color]string{
 		Red:    "\033[31m",
 		Green:  "\033[32m",

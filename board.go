@@ -2,22 +2,13 @@ package main
 
 import "fmt"
 
-type Segment struct {
-	Inner   Symbol
-	Middle  Symbol
-	Outer   Symbol
-	Outside Symbol
-}
-
 type Board struct {
 	Segments []Segment
 }
 
-func NewBoard(symbols map[int]Symbol) Board {
-	base := NewBaseBoard()
-
+func NewBoard(symbols map[int]Symbol, baseSegments []BaseSegment) Board {
 	var segments []Segment
-	for _, bs := range base.Segments {
+	for _, bs := range baseSegments {
 		var segment Segment
 		segment.Inner = symbols[bs.Inner]
 		segment.Middle = symbols[bs.Middle]
@@ -40,4 +31,12 @@ func (b Board) Print() {
 	fmt.Println("| " + topString)
 	fmt.Println("| " + middleString)
 	fmt.Println("| " + bottomString)
+}
+
+func (b Board) Evaluate() ScoredBoard {
+	score := 0
+	for _, s := range b.Segments {
+		score += s.Evaluate()
+	}
+	return ScoredBoard{Board: b, Score: score}
 }
