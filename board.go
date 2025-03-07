@@ -10,18 +10,20 @@ type Segment struct {
 }
 
 type Board struct {
-	Segments [13]Segment
+	Segments []Segment
 }
 
 func NewBoard(symbols map[int]Symbol) Board {
 	base := NewBaseBoard()
 
-	var segments [13]Segment
-	for i, segment := range base.Segments {
-		segments[i].Inner = symbols[segment.Inner]
-		segments[i].Middle = symbols[segment.Middle]
-		segments[i].Outer = symbols[segment.Outer]
-		segments[i].Outside = symbols[segment.Outside]
+	var segments []Segment
+	for _, bs := range base.Segments {
+		var segment Segment
+		segment.Inner = symbols[bs.Inner]
+		segment.Middle = symbols[bs.Middle]
+		segment.Outer = symbols[bs.Outer]
+		segment.Outside = symbols[bs.Outside]
+		segments = append(segments, segment)
 	}
 	return Board{Segments: segments}
 }

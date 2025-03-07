@@ -1,6 +1,6 @@
 package main
 
-type Numbers [13]int
+type Numbers []int
 
 func (n Numbers) Len() int {
 	return len(n)

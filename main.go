@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"sync"
 	"time"
 
 	"modernc.org/mathutil"
@@ -17,22 +16,22 @@ func main() {
 	start = time.Now()
 
 	i := 0
-	var wg sync.WaitGroup
+	// var wg sync.WaitGroup
 	for mathutil.PermutationNext(numbers) {
-		wg.Add(1)
+		// wg.Add(1)
 		i++
 		if i > 10 {
 			break
 		}
-		go func(numbers Numbers) {
-			symbolMap := symbols.ToMap(numbers)
-			board := NewBoard(symbolMap)
-			fmt.Println("---------------------------------------------------------------")
-			board.Print()
-			fmt.Println("---------------------------------------------------------------")
-		}(numbers)
+		// go func(numbers Numbers) {
+		symbolMap := symbols.ToMap(numbers)
+		board := NewBoard(symbolMap)
+		fmt.Println("---------------------------------------------------------------")
+		board.Print()
+		fmt.Println("---------------------------------------------------------------")
+		// }(numbers)
 	}
-	wg.Wait()
+	// wg.Wait()
 	end = time.Now()
 
 	fmt.Printf("Time taken: %s  \n", end.Sub(start))

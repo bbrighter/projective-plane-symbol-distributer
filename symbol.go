@@ -17,7 +17,7 @@ type Shape string
 const (
 	Circle   Shape = "○"
 	Square   Shape = "□"
-	Triangle Shape = "△"
+	Triangle Shape = "A"
 	Star     Shape = "X"
 )
 
@@ -26,21 +26,21 @@ type Symbol struct {
 	Shape Shape
 }
 
-type Symbols [13]Symbol
+type Symbols []Symbol
 
 var Colors = []Color{Red, Green, Blue, Yellow}
 var Shapes = []Shape{Circle, Square, Triangle}
 
 func NewSymbols() Symbols {
-	var symbols [13]Symbol
-	i := 0
+	var symbols []Symbol
+
 	for _, color := range Colors {
 		for _, shape := range Shapes {
-			symbols[i] = Symbol{Color: color, Shape: shape}
-			i++
+			symbol := Symbol{Color: color, Shape: shape}
+			symbols = append(symbols, symbol)
 		}
 	}
-	symbols[12] = Symbol{Color: Purple, Shape: Star}
+	symbols = append(symbols, Symbol{Color: Purple, Shape: Star})
 	return symbols
 }
 
