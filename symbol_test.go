@@ -21,8 +21,8 @@ func TestToMap(t *testing.T) {
 	symbols := NewSymbols()
 	assert.Equal(t, Symbol{Color: Red, Shape: Circle}, symbols[0])
 
-	permutation := Numbers{2, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13}
-	mapping := symbols.ToMap(permutation)
+	permutation := []int{2, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13}
+	mapping := symbols.ColorMap(permutation)
 
 	assert.Len(t, mapping, 13)
 	assert.Equal(t, Symbol{Color: Red, Shape: Circle}, mapping[2], "First symbol is now at second number")

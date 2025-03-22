@@ -5,7 +5,7 @@ import "fmt"
 type Color int
 
 const (
-	Red Color = iota
+	Red Color = iota + 1
 	Green
 	Blue
 	Yellow
@@ -24,6 +24,7 @@ const (
 type Symbol struct {
 	Color Color
 	Shape Shape
+	Index int
 }
 
 type Symbols []Symbol
@@ -43,12 +44,22 @@ func NewSymbols() Symbols {
 	return symbols
 }
 
-func (symbols Symbols) ToMap(permutation Numbers) map[int]Symbol {
-	var symbolMap = make(map[int]Symbol)
+func (symbols Symbols) ColorMap(permutation []int) map[int]Color {
+	var symbolMap = make(map[int]Color)
 	for index, value := range permutation {
-		symbolMap[value] = symbols[index]
+		symbolMap[value] = symbols[index].Color
 	}
 	return symbolMap
+}
+
+func (symbols Symbols) Color(color Color) Symbols {
+	var coloredSymbols Symbols
+	for _, s := range symbols {
+		if s.Color == color {
+			coloredSymbols = append(coloredSymbols, s)
+		}
+	}
+	return coloredSymbols
 }
 
 func (s Symbol) String() string {
@@ -66,6 +77,17 @@ func (s Symbol) String() string {
 	if !exists {
 		colorCode = reset
 	}
+	if s.Shape == "" {
+		s.Shape = "●"
+	}
 	return fmt.Sprintf("%s%s%s", colorCode, s.Shape, reset)
 
+}
+
+func (s Symbol) HasColor(color Color) bool {
+	return s.Color == color
+}
+
+func (s Symbol) HasShape() bool {
+	return s.Shape != ""
 }

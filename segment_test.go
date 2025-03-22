@@ -9,29 +9,37 @@ import (
 func TestEvaluateSegment(t *testing.T) {
 
 	tests := map[string]struct {
-		segment       Segment
-		expectedScore int
+		segment                      Segment
+		expectedScore                int
+		expectedNumberOfUniqueColors int
 	}{
 		"highest score": {
-			Segment{
+			segment: Segment{
 				Symbol{Color: Red, Shape: Circle},
 				Symbol{Color: Blue, Shape: Square},
 				Symbol{Color: Green, Shape: Triangle},
 				Symbol{Color: Purple, Shape: Star},
-			}, 256},
+			},
+			expectedScore:                100,
+			expectedNumberOfUniqueColors: 4,
+		},
 		"lowest score": {
-			Segment{
+			segment: Segment{
 				Symbol{Color: Red, Shape: Circle},
 				Symbol{Color: Red, Shape: Circle},
 				Symbol{Color: Red, Shape: Circle},
 				Symbol{Color: Red, Shape: Circle},
-			}, 1},
+			},
+			expectedScore:                -53,
+			expectedNumberOfUniqueColors: 1,
+		},
 	}
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
-			score := test.segment.Evaluate()
+			score, uniqueColors := test.segment.Evaluate()
 
+			assert.Equal(t, test.expectedNumberOfUniqueColors, uniqueColors)
 			assert.Equal(t, test.expectedScore, score)
 		})
 	}

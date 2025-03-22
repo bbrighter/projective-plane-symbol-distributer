@@ -14,7 +14,7 @@ type Segment struct {
 	Outside Symbol
 }
 
-func (s Segment) Evaluate() int {
+func (s Segment) Evaluate() (int, int) {
 	colorSet := make(map[Color]struct{})
 	shapeSet := make(map[Shape]struct{})
 
@@ -24,6 +24,16 @@ func (s Segment) Evaluate() int {
 		shapeSet[symbol.Shape] = struct{}{}
 	}
 	uniqueColors := len(colorSet)
+	var uniqueColorPoints int
+	switch uniqueColors {
+	case 4:
+		uniqueColorPoints = 100
+	case 3:
+		uniqueColorPoints = 0
+	default:
+		uniqueColorPoints = -50
+	}
+
 	uniqueShapes := len(shapeSet)
 
 	var colorPenalty, shapePenalty int = 0, 0
@@ -36,5 +46,18 @@ func (s Segment) Evaluate() int {
 		}
 	}
 
-	return uniqueColors*5 + uniqueShapes*3 - colorPenalty*4 - shapePenalty*2
+	return uniqueColorPoints + uniqueShapes*0 - colorPenalty*1 - shapePenalty*0, uniqueColors
+}
+
+// A segment is not valid if there are only 2 different colors
+func (s Segment) Validate(color Color) bool {
+	colorCount := 0
+
+	symbols := []Symbol{s.Inner, s.Middle, s.Outer, s.Outside}
+	for _, symbol := range symbols {
+		if symbol.HasColor(color) {
+			colorCount++
+		}
+	}
+	return colorCount < 3
 }
