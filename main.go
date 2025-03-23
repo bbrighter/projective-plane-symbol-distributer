@@ -51,6 +51,7 @@ func main() {
 	redSymbols := symbols.Color(Red)
 	greenSymbols := symbols.Color(Green)
 	yellowSymbols := symbols.Color(Yellow)
+
 	for redCombinations.Next() {
 		rc := redCombinations.Combination(dst)
 		redSymbolMap := redSymbols.ColorMap(rc)
@@ -96,27 +97,74 @@ func main() {
 				if !board.Validate(Yellow) {
 					continue
 				}
+
+				jokerIndex := board.GetJokerIndex()
+				board.SetColor(jokerIndex, Purple)
 				board.ColorUncoloredSegments(Blue)
-				// Set joker at 13
-				board.SetColor(12, Purple)
+				if board.ColorCount(Green) != 12 || board.ColorCount(Red) != 12 || board.ColorCount(Yellow) != 12 || board.ColorCount(Blue) != 12 {
+					board.Print()
+					log.Panicf("Color count of green is %d, of red is %d, of yellow %d, of blue %d not 12, and %d purple", board.ColorCount(Green), board.ColorCount(Red), board.ColorCount(Yellow), board.ColorCount(Blue), board.ColorCount(Purple))
+				}
 				if !board.Validate(Blue) {
 					continue
 				}
 				i++
 
-				scoredBoard := board.Evaluate()
-				if scoredBoard.NumberOfColumnsWith4Colors == 4 {
-					continue
-				}
-				if len(topBoards) < 5 {
-					topBoards = append(topBoards, scoredBoard)
-				} else {
-					sort.Slice(topBoards, func(i, j int) bool {
-						return topBoards[i].Score > topBoards[j].Score
-					})
-					if scoredBoard.Score > topBoards[len(topBoards)-1].Score {
-						topBoards[len(topBoards)-1] = scoredBoard
+				// // Set shapes
+				// shapePermutations := combin.NewPermutationGenerator(3, 3)
+				shapePermutations := combin.NewCombinationGenerator(3, 3)
+				redIndexes := board.GetColorIndexes(Red)
+				for shapePermutations.Next() {
+					sp := shapePermutations.Combination(nil)
+					shapeIndexes := applyPermutation(redIndexes, sp)
+					board.SetShapes(shapeIndexes)
+
+					greenIndexes := board.GetColorIndexes(Green)
+					greenShapePermutations := combin.NewPermutationGenerator(3, 3)
+					for greenShapePermutations.Next() {
+						gsp := greenShapePermutations.Permutation(nil)
+						shapeIndexes := applyPermutation(greenIndexes, gsp)
+						board.SetShapes(shapeIndexes)
+
+						yellowIndexes := board.GetColorIndexes(Yellow)
+						// yellowShapePermutations := combin.NewPermutationGenerator(3, 3)
+						yellowShapePermutations := combin.NewCombinationGenerator(3, 3)
+						for yellowShapePermutations.Next() {
+							ysp := yellowShapePermutations.Combination(nil)
+							shapeIndexes := applyPermutation(yellowIndexes, ysp)
+							board.SetShapes(shapeIndexes)
+
+							blueIndexes := board.GetColorIndexes(Blue)
+							// blueShapePermutations := combin.NewPermutationGenerator(3, 3)
+							blueShapePermutations := combin.NewCombinationGenerator(3, 3)
+							for blueShapePermutations.Next() {
+								bsp := blueShapePermutations.Combination(nil)
+								shapeIndexes := applyPermutation(blueIndexes, bsp)
+								board.SetShapes(shapeIndexes)
+
+								purpleIndexes := board.GetColorIndexes(Purple)
+								board.SetShape(purpleIndexes[0], Star)
+
+								scoredBoard := board.Evaluate()
+								if scoredBoard.NumberOfColumnsWith4Colors == 4 {
+									continue
+								}
+								if len(topBoards) < 5 {
+									topBoards = append(topBoards, scoredBoard)
+								} else {
+									sort.Slice(topBoards, func(i, j int) bool {
+										return topBoards[i].Score > topBoards[j].Score
+									})
+									if scoredBoard.Score > topBoards[len(topBoards)-1].Score {
+										topBoards[len(topBoards)-1] = scoredBoard
+									}
+								}
+							}
+
+						}
+
 					}
+
 				}
 			}
 		}

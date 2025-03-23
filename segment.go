@@ -31,10 +31,21 @@ func (s Segment) Evaluate() (int, int) {
 	case 3:
 		uniqueColorPoints = 0
 	default:
-		uniqueColorPoints = -50
+		uniqueColorPoints = -500
 	}
 
 	uniqueShapes := len(shapeSet)
+	var uniqueShapePoints int
+	switch uniqueShapes {
+	case 4:
+		uniqueShapePoints = 75
+	case 3:
+		uniqueShapePoints = 25
+	case 2:
+		uniqueShapePoints = 0
+	default:
+		uniqueShapePoints = -75
+	}
 
 	var colorPenalty, shapePenalty int = 0, 0
 	for i := 1; i < len(symbols); i++ {
@@ -46,7 +57,7 @@ func (s Segment) Evaluate() (int, int) {
 		}
 	}
 
-	return uniqueColorPoints + uniqueShapes*0 - colorPenalty*1 - shapePenalty*0, uniqueColors
+	return uniqueColorPoints + uniqueShapePoints - colorPenalty*1 - shapePenalty*2, uniqueColors
 }
 
 // A segment is not valid if there are only 2 different colors

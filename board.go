@@ -43,6 +43,49 @@ func (b *Board) SetColor(index int, color Color) {
 	}
 }
 
+func (b *Board) SetShapes(indexes []int) {
+	for i, idx := range indexes {
+		var useShape Shape
+		switch i {
+		case 0:
+			useShape = Circle
+		case 1:
+			useShape = Square
+		case 2:
+			useShape = Triangle
+		}
+		b.SetShape(idx, useShape)
+	}
+}
+
+func (b *Board) SetShape(index int, shape Shape) {
+	for i, s := range b.Segments {
+		if s.Inner.Index == index {
+			b.Segments[i].Inner.Shape = shape
+		}
+		if s.Middle.Index == index {
+			b.Segments[i].Middle.Shape = shape
+		}
+		if s.Outer.Index == index {
+			b.Segments[i].Outer.Shape = shape
+		}
+		if s.Outside.Index == index {
+			b.Segments[i].Outside.Shape = shape
+		}
+	}
+}
+
+func (b Board) GetJokerIndex() int {
+	jokerIndex := 0
+	for i, s := range b.Segments {
+		if s.Inner.Color == 0 {
+			jokerIndex = b.Segments[i].Inner.Index
+			break
+		}
+	}
+	return jokerIndex
+}
+
 func (b Board) Print() {
 	var topString, middleString, bottomString, outerString string
 	for _, segment := range b.Segments {
@@ -86,6 +129,29 @@ func (b Board) Validate(color Color) bool {
 		}
 	}
 	return true
+}
+
+func (b Board) GetColorIndexes(color Color) []int {
+	indexes := make(map[int]bool)
+	for _, s := range b.Segments {
+		if s.Inner.Color == color {
+			indexes[s.Inner.Index] = true
+		}
+		if s.Middle.Color == color {
+			indexes[s.Middle.Index] = true
+		}
+		if s.Outer.Color == color {
+			indexes[s.Outer.Index] = true
+		}
+		if s.Outside.Color == color {
+			indexes[s.Outside.Index] = true
+		}
+	}
+	var result []int
+	for key := range indexes {
+		result = append(result, key)
+	}
+	return result
 }
 
 func (b Board) ColorCount(color Color) int {

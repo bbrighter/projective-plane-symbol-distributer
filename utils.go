@@ -19,3 +19,11 @@ func createBijection(numbersInUse []int, numberOfPoints int) map[int]int {
 	}
 	return result
 }
+
+func applyPermutation(input []int, permutation []int) []int {
+	result := make([]int, len(input))
+	for i, p := range permutation {
+		result[i] = input[p]
+	}
+	return result
+}
